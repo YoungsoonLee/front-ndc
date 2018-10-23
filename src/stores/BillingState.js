@@ -132,7 +132,7 @@ export default class BillingState {
                 //this.errorFlash = 'something wrong. please try again.'
                 this.this.setErrorFlashMessage('something wrong. please try again.');
             }else{
-                //console.log(paymentToken.data.data);
+                console.log(paymentToken.data.data);
 
                 options.access_token = paymentToken.data.data.pxid;
     
