@@ -134,13 +134,13 @@ export default class BillingState {
             }else{
                 console.log(paymentToken.data.data);
 
-                options.access_token = paymentToken.data.data.pxid;
+                options.access_token = paymentToken.data.data.token;
     
                 if (paymentToken.data.data.mode === 'sandbox') {
                     options.sandbox = true;
                 }
 
-                console.log(options.sandbox);
+                console.log("xsolla mode is sandbox? ", options.sandbox);
 
                 XPayStationWidget.init(options);
     
@@ -152,11 +152,9 @@ export default class BillingState {
     // this is to payment history.
     async fetchPaymentHistory(appState, history) {
         //console.log('billingState');
-        await appState.authenticate();
+        await appState.checkAuth(); // TODO: ??
 
-        if(!appState.loggedInUserInfo._id) {
-            //go to login
-            //this.errorFlash = 'Need login first';
+        if(!appState.authenticated) {
             this.setErrorFlashMessage('Need login first');
             //go to login
             history.push('/login');
@@ -165,6 +163,43 @@ export default class BillingState {
             //console.log('fetchHistory');
 
             if(this.historyMode === 'charge') {
+                var table = new Tabulator("#tabulator-1", {
+                    height:511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                    layout:"fitColumns", //fit columns to width of table (optional)
+                    responsiveLayout:true,
+                    placeholder:"No Data Available", //display message to user on empty table
+                    columns:[ //Define Table Columns
+                        {title:"No", formatter:"rownum", align:"center", width:100},
+                        {title:"Date", field:"transaction_at", align:"left", formatter:function(cell, formatterParams){
+                                var value = cell.getValue();
+                                return moment(value).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        },
+                        {title:"Transaction Id", field:"pxid", align:"left"},
+                        {title:"Item Name", field:"item_name"},
+                        {title:"Price", field:"price",align:"left", formatter:function(cell, formatterParams){
+                                var value = cell.getValue();
+                                return numeral(value).format('$ 0,0.0');
+                            }
+                        },
+                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"amount",align:"left" , formatter:function(cell, formatterParams){
+                                var value = cell.getValue();
+                                //return '<i class="fa fa-diamond" aria-hidden="true"></i> '+numeral(value).format('0,0');
+                                return '<i aria-hidden="true" class="diamond icon"></i> '+numeral(value).format('0,0');
+                            }
+                        },
+                    ],
+                    /*
+                    rowClick:function(e, row){ //trigger an alert message when the row is clicked
+                        alert("Row " + row.getData().id + " Clicked!!!!");
+                    },
+                    */
+                });
+
+                table.setData('http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
+                //$("#tabulator-1").tabulator("setData", 'http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID,"POST");
+
+                /*
                 $("#tabulator-1").tabulator({});
                 $("#tabulator-1").tabulator("destroy");
 
@@ -202,7 +237,37 @@ export default class BillingState {
 
                 $("#tabulator-1").tabulator("setData", 'http://localhost:4000/api/v1.0/billing/getChargeHistory/'+appState.loggedInUserInfo._id);
                 $("#tabulator-1").tabulator("redraw", true);
+                */
             }else{
+                var table = new Tabulator("#tabulator-1", {
+                    height:511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                    layout:"fitColumns", //fit columns to width of table (optional)
+                    responsiveLayout:true,
+                    placeholder:"No Data Available", //display message to user on empty table
+                    columns:[ //Define Table Columns
+                        {title:"No", formatter:"rownum", align:"center", width:150},
+                        {title:"Date", field:"used_at", align:"left", formatter:function(cell, formatterParams){
+                                var value = cell.getValue();
+                                return moment(value).format('YYYY-MM-DD HH:mm:ss')
+                            }
+                        },
+                        {title:"Used Id", field:"deduct_id", align:"left"},
+                        {title:"Item Name", field:"item_name"},
+                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"item_amount",align:"left" , formatter:function(cell, formatterParams){
+                                var value = cell.getValue();
+                                //return '<i class="fa fa-diamond" aria-hidden="true"></i> '+numeral(value).format('0,0');
+                                return '<i aria-hidden="true" class="diamond icon"></i> '+numeral(value).format('0,0');
+                            }
+                        },
+                    ],
+                    /*
+                    rowClick:function(e, row){ //trigger an alert message when the row is clicked
+                        alert("Row " + row.getData().id + " Clicked!!!!");
+                    },
+                    */
+                });
+
+                /*
                 $("#tabulator-1").tabulator({});
                 $("#tabulator-1").tabulator("destroy");
                 //$("#tabulator-1").remove();
@@ -236,6 +301,7 @@ export default class BillingState {
 
                 $("#tabulator-1").tabulator("setData", 'http://localhost:4000/api/v1.0/billing/getDeductHistory/'+appState.loggedInUserInfo._id);
                 $("#tabulator-1").tabulator("redraw", true);
+                */
             }
         }
     }

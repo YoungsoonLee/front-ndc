@@ -12,7 +12,7 @@ import NotFound from "./NotFound";
 import Home from "./Home";
 import { Login, Logout, Signup } from './auth/index';
 import {ConfirmEmail, InvalidConfirmEmail, ForgotPassword, ResetPassword, Profile } from './user/index';
-import { Payment } from './billing/index';
+import { Payment, PaymentHistory } from './billing/index';
 
 @withRouter
 @inject("store")
@@ -54,6 +54,8 @@ export default class App extends Component {
 						<Route path="/profile" component={Profile} />
 
 						<Route exact path="/payment" component={Payment} />
+						<Route exact path="/payment/history" component={PaymentHistory} />
+
 
 						<Route component={NotFound}/> 
 					</Switch>
