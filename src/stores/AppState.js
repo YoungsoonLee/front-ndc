@@ -233,7 +233,7 @@ export default class AppState {
         redirect.set(history,lastLocation);
 
         // flash message
-        this.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
+        // this.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
 
       }catch(err){
         //console.log(err);
