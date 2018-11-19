@@ -13,6 +13,8 @@ import Home from "./Home";
 import { Login, Logout, Signup } from './auth/index';
 import {ConfirmEmail, InvalidConfirmEmail, ForgotPassword, ResetPassword, Profile } from './user/index';
 import { Payment, PaymentHistory } from './billing/index';
+import { News, NewsDetail } from './news/index';
+import { Forum } from './forum/index';
 
 @withRouter
 @inject("store")
@@ -56,6 +58,10 @@ export default class App extends Component {
 						<Route exact path="/payment" component={Payment} />
 						<Route exact path="/payment/history" component={PaymentHistory} />
 
+						<Route exact path="/news" component={News} />
+						<Route exact path="/news/:id" component={NewsDetail} />
+
+						<Route exact path="/forum" component={Forum} />
 
 						<Route component={NotFound}/> 
 					</Switch>

@@ -12,9 +12,13 @@ export default function DataWrapper(WrappedComponent) {
 		}
 
 		componentDidMount() {
-			console.log(this.props);
+			//console.log("componentDidMount DW: ", this.props);
+			//console.log("this.props.match: ", this.props.match.params.id);
+
 			let pathname = this.props.match.url;
-			let id = this.props.match.id ? this.props.match.id : null;
+			let id = this.props.match.params.id ? this.props.match.params.id : null;
+
+
 			this.store.fetchData(pathname, id);
 		}
 

@@ -63,6 +63,7 @@
     "react-load-script": "0.0.6",
     "react-router-dom": "latest",
     "react-router-last-location": "^1.1.0",
+    "react-slick": "^0.23.2",
     "rfx-core": "^1.5.3",
     "semantic-ui-react": "^0.82.5",
     "tabulator-tables": "^4.0.5",

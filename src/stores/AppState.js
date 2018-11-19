@@ -586,9 +586,16 @@ export default class AppState {
   // ------------------------------------------------------------------------------------------------------------
   // not use below
   async fetchData(pathname, id) {
-    let { data } = await axios.get(
-      `https://jsonplaceholder.typicode.com${pathname}`
-    );
+    console.log('id: ', id)
+    var url = "";
+
+    if (id == null) {
+      url = "https://jsonplaceholder.typicode.com/posts"
+    }else{
+      url ="https://jsonplaceholder.typicode.com/posts/"+id
+    }
+
+    let { data } = await axios.get(url);
     console.log(data);
     data.length > 0 ? this.setData(data) : this.setSingle(data);
   }

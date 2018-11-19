@@ -17,7 +17,7 @@ export default class Subitem extends Component {
 		const { item } = this.store.appState;
 		return (
 			<div className="page post">
-				<Link to="/posts">← Back to Posts</Link>
+				<Link to="/news">← Back to Posts</Link>
 				{!!item &&
 					<article>
 						<h1>{item.title}</h1>

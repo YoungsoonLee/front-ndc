@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Message } from 'semantic-ui-react'
 
+import Carousel from './ui/Carousel';
+
 @inject("store")
 @observer
 export default class Home extends Component {
@@ -49,16 +51,12 @@ export default class Home extends Component {
 		
 		return (
 			<div className="page home">
-				<header>
+					<div style={{width: '100%'}}><Carousel /></div> 
 					<div>
 						{ errorFlashView }
 						{ successFlashView }
 					</div>
-					<div className="hero-unit">
-						<div className="react-logo" />
-						<h1>Closers! naddic games</h1>
-					</div>
-				</header>
+				
 				
 				<main>
 					<div className="section-header">
