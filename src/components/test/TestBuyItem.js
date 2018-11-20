@@ -12,7 +12,7 @@ import Protected from "../Protected";
 @observer
 class TestBuyItem extends Component {
 
-    state = { itemName: '', amount: 0 };
+    state = { external_id: '1', item_id: '1', itemName: 'test-item', amount: '100' };
 
     constructor(props) {
         super(props);
@@ -28,17 +28,33 @@ class TestBuyItem extends Component {
         this.setState({ amount: value });
     }
 
+    handleInputExternalId = (e, {value}) => {
+        this.setState({ external_id: value });
+    }
+
+    handleInputItemId = (e, {value}) => {
+        this.setState({ item_id: value });
+    }
 
     handleBuyItem(e) {
         e.preventDefault();
-        const { history } = this.props;
-        //this.store.updatePassword(this.store.userInfo.password, this.state.confirmPassword,history);
+        if (this.state.itemName == '') {
+            // error
+        }else {
+            this.store.appState.setLoading('on');
+            const { history } = this.props;
+            //this.store.updatePassword(this.store.userInfo.password, this.state.confirmPassword,history);
+            this.store.billingState.testBuyItem(this.store.billingState, this.state.external_id, this.state.item_id, this.state.itemName, this.state.amount, history);
+
+        }   
     }
+
 
     render() {
         
         //const { error, errorFlash, successFlash } = this.store.billingState;
-        const { error, errorFlash, successFlash, profileEmail, profileDisplayname, profileProvider, userInfo, loading } = this.store;
+        const { error, errorFlash, successFlash} = this.store.billingState;
+        const { loading } = this.store.appState;
 
         //const { loading } = this.store.appState;
         var ErrorView = null;
@@ -76,8 +92,10 @@ class TestBuyItem extends Component {
                     </p>
                     <hr />
                     <Form className='attached fluid segment' style={{ maxWidth: 600 }}>
+                        <Form.Input label='External ID' name='externalId' placeholder='External ID' type='text' value={this.state.external_id} onChange={this.handleInputExternalId}/>
+                        <Form.Input label='Item ID' name='itemId' placeholder='Item ID' type='text' value={this.state.item_id} onChange={this.handleInputItemId}/>
                         <Form.Input label='Item Name' name='itemName' placeholder='item name' type='text' value={this.state.itemName} onChange={this.handleInputItemName}/>
-                        <Form.Input label='Amount' name='amount' placeholder='item name' type='text' value={this.state.amount} onChange={this.handleInputAmount}/>
+                        <Form.Input label='Amount' name='amount' placeholder='item amount' type='text' value={this.state.amount} onChange={this.handleInputAmount}/>
                         <div>
                             { error !== null ? ErrorView : null }
                         </div>

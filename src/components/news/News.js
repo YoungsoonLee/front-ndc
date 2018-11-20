@@ -17,12 +17,13 @@ class News extends Component {
     constructor(props) {
         super(props);
         this.store = this.props.store;
+        this.store.appState.checkAuth();
     }
 
     render() {
         const { history } = this.props;
         const { chagrgeItems, errorFlash, successFlash } = this.store.billingState;
-        const { loggedInUserInfo, loading } = this.store.appState;
+        //const { loggedInUserInfo, loading } = this.store.appState;
 
         var successFlashView = null;
         if(successFlash) {

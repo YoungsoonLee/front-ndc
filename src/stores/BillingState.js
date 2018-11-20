@@ -1,6 +1,7 @@
 import { observable, action } from "mobx";
 import axios from "axios";
 
+import storage from '../lib/storage';
 import * as BillingAPI from '../lib/api/billing';
 
 // store at billing
@@ -306,6 +307,63 @@ export default class BillingState {
                 */
             }
         }
+    }
+
+    // test buy item
+    async testBuyItem(billingState, external_id, item_id, item_name, amount, history) {
+        
+        let cookieInfo = null;
+        cookieInfo = storage.get('___GOM___');
+
+        console.log(external_id, item_id, item_name, amount, cookieInfo);
+
+        if ( cookieInfo ) {
+            let data = null;
+            try{
+                //data = await BillingAPI.getHash({token: cookieInfo.token, service_id: 'S1538718691252088000', external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount});
+                axios
+                .post('/v1/billing/getDeductHash', { service_id: 'S1538718691252088000', external_id, item_id, item_name, item_amount: amount}, {headers: {Authorization: cookieInfo.token}})
+                .then(function (response) {
+                    // handle success
+                    //console.log("rr: ", response);
+                    //hash = response.data.data
+                    //data = BillingAPI.testBuyItem({token: cookieInfo.token, service_id: "S1538718691252088000", external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount, hash: response.data.data});
+                    axios
+                    .post('/v1/billing/buyItem', { external_id, service_id: "S1538718691252088000", item_id, item_name, item_amount: amount, hash: response.data.data}, {headers: {Authorization: cookieInfo.token}})
+                    .then(function (response) {
+                        console.log("result: ", response, response.data.code);
+                        if (response.data.code == "ok") {
+                            billingState.setHistoryMode('used');
+                            //this.historyMode = 'used';
+                            history.push('/payment/history');
+                        }else{
+                            // error
+                        }
+                    });
+                    
+                });
+            }catch(e){
+                //await this.setInitLoggedInUserInfo();
+                console.log('error testBuyItem: ', e);
+            }
+
+            //console.log(data.data.data);
+            /*
+            try{
+                data = await BillingAPI.testBuyItem({token: cookieInfo.token, service_id: 'S1538718691252088000', external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount, hash: data.data.data});
+            }catch(e){
+                //await this.setInitLoggedInUserInfo();
+                console.log('error testBuyItem: ', e);
+            }
+
+            console.log(data);
+            */
+            
+        }else{
+            // go to login
+        }
+
+        
     }
 
     //test
