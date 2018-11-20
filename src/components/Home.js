@@ -51,12 +51,13 @@ export default class Home extends Component {
 		
 		return (
 			<div className="page home">
-					<div style={{width: '100%'}}><Carousel /></div> 
+					
 					<div>
 						{ errorFlashView }
 						{ successFlashView }
 					</div>
-				
+
+					<div style={{width: '100%'}}><Carousel /></div> 
 				
 				<main>
 					<div className="section-header">

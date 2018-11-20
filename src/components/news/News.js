@@ -4,10 +4,10 @@ import { Link, withRouter } from "react-router-dom";
 
 import { Container, Dimmer, Loader, Segment, Card, Icon, Button, Image, Message } from 'semantic-ui-react'
 
-import Protected from "../Protected";
+//import Protected from "../Protected";
 import DataWrapper from "../DataWrapper";
 
-@Protected
+//@Protected
 @DataWrapper
 @withRouter
 @inject("store")

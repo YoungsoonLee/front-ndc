@@ -16,6 +16,8 @@ import { Payment, PaymentHistory } from './billing/index';
 import { News, NewsDetail } from './news/index';
 import { Forum } from './forum/index';
 
+import { TestBuyItem } from './test/index';
+
 @withRouter
 @inject("store")
 @observer
@@ -62,6 +64,8 @@ export default class App extends Component {
 						<Route exact path="/news/:id" component={NewsDetail} />
 
 						<Route exact path="/forum" component={Forum} />
+
+						<Route exact path="/test" component={TestBuyItem} />
 
 						<Route component={NotFound}/> 
 					</Switch>

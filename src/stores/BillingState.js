@@ -53,7 +53,7 @@ export default class BillingState {
         }
     }
 
-  async openPay(UID, itemid, history, appState) {
+    async openPay(UID, itemid, history, appState) {
         //-------
         var complete = false;
         var waiting = false;
@@ -251,9 +251,9 @@ export default class BillingState {
                                 return moment(value).format('YYYY-MM-DD HH:mm:ss')
                             }
                         },
-                        {title:"Used Id", field:"deduct_id", align:"left"},
+                        {title:"Used Id", field:"id", align:"left"},
                         {title:"Item Name", field:"item_name"},
-                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"item_amount",align:"left" , formatter:function(cell, formatterParams){
+                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"amount",align:"left" , formatter:function(cell, formatterParams){
                                 var value = cell.getValue();
                                 //return '<i class="fa fa-diamond" aria-hidden="true"></i> '+numeral(value).format('0,0');
                                 return '<i aria-hidden="true" class="diamond icon"></i> '+numeral(value).format('0,0');
@@ -266,6 +266,8 @@ export default class BillingState {
                     },
                     */
                 });
+
+                table.setData('http://localhost:8080/v1/billing/getUsedHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
 
                 /*
                 $("#tabulator-1").tabulator({});

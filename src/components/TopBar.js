@@ -114,6 +114,13 @@ export default class TopBar extends Component {
 				</Menu.Item>
 			)
 		}
+
+		var testBuyItemPane = null;
+		if(authenticated) {
+			testBuyItemPane = (
+				<Menu.Item name='test' active={activeItem === 'test'} onClick={this.handleItemClick} >Test Buy Item</Menu.Item>
+			)
+		}
 		
 		return (
 			<div>
@@ -123,6 +130,8 @@ export default class TopBar extends Component {
 					<Menu.Item name='forum' active={activeItem === 'forum'} onClick={this.handleItemClick} />
 
 					{paymentPane}
+
+					{testBuyItemPane}
 					
 					{Viewpane}
 				</Menu>
