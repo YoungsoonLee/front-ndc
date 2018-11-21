@@ -78,7 +78,7 @@ class Payment extends Component {
                     {chagrgeItems.slice(0, chagrgeItems.length).map(item => 
                         <Card key={item.itemid} >
                             <Card.Content>
-                                <Icon floated='left' name='diamond'/>
+                                <Icon name='diamond'/>
                                 <Card.Header>
                                     {item.item_name}
                                 </Card.Header>
