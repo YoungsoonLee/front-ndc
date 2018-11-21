@@ -87,6 +87,7 @@ class TestBuyItem extends Component {
         return (
             <Container text style={{ marginTop: '5em' }}>
                 <div className="page posts">
+                    
                     <p className="subheader">
                         Buy Game Item for Test
                     </p>
@@ -97,8 +98,9 @@ class TestBuyItem extends Component {
                         <Form.Input label='Item Name' name='itemName' placeholder='item name' type='text' value={this.state.itemName} onChange={this.handleInputItemName}/>
                         <Form.Input label='Amount' name='amount' placeholder='item amount' type='text' value={this.state.amount} onChange={this.handleInputAmount}/>
                         <div>
-                            { error !== null ? ErrorView : null }
-                        </div>
+                        { errorFlashView }
+                        { successFlashView }
+                    </div>
                         <br/>
                         { loading === 'on' ? loaderView : null  }
                         <Button color='blue' onClick={this.handleBuyItem.bind(this)}>Buy Game Item for Test</Button>

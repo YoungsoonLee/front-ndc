@@ -343,9 +343,16 @@ export default class BillingState {
                         }else{
                             // error
                         }
+                    }).catch(function (error){
+                        appState.setLoading('off');
+                        console.log("buyitem error: ", error.response); //error.response.data.message
+                        billingState.setErrorFlashMessage(error.response.data.message);
+                    
                     });
                     
-                }).catch(appState.setLoading('on'));
+                }).catch(function(error){
+                    console.log("getDeductHash error: ", errror);
+                });
             }catch(e){
                 //await this.setInitLoggedInUserInfo();
                 console.log('error testBuyItem: ', e);
