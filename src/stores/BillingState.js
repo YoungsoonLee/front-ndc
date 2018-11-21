@@ -198,7 +198,7 @@ export default class BillingState {
                 });
 
                 //table.setData('http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
-                table.setData('https://api-ndc.herokuapp.com/'+appState.loggedInUserInfo.UID, {}, "POST");
+                table.setData('https://api-ndc.herokuapp.com/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
                 
                 //$("#tabulator-1").tabulator("setData", 'http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID,"POST");
 
@@ -271,7 +271,7 @@ export default class BillingState {
                 });
 
                 //table.setData('http://localhost:8080/v1/billing/getUsedHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
-                table.setData('https://api-ndc.herokuapp.com/'+appState.loggedInUserInfo.UID, {}, "POST");
+                table.setData('https://api-ndc.herokuapp.com/v1/billing/getUsedHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
 
                 /*
                 $("#tabulator-1").tabulator({});
