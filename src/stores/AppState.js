@@ -254,7 +254,7 @@ export default class AppState {
     let cookieInfo = null;
     cookieInfo = storage.get('___GOM___');
 
-    //console.log("cookie: ", cookieInfo);
+    console.log("cookie: ", cookieInfo);
 
     if ( cookieInfo ) {
       let auth = null;
