@@ -12,7 +12,7 @@ import Protected from "../Protected";
 @observer
 class TestBuyItem extends Component {
 
-    state = { external_id: '1', item_id: '1', itemName: 'test-item', amount: '100' };
+    state = { external_id: '1', item_id: '1', itemName: 'test-item', amount: 100 };
 
     constructor(props) {
         super(props);
@@ -44,7 +44,7 @@ class TestBuyItem extends Component {
             this.store.appState.setLoading('on');
             const { history } = this.props;
             //this.store.updatePassword(this.store.userInfo.password, this.state.confirmPassword,history);
-            this.store.billingState.testBuyItem(this.store.billingState, this.state.external_id, this.state.item_id, this.state.itemName, this.state.amount, history);
+            this.store.billingState.testBuyItem(this.store.appState, this.store.billingState, this.state.external_id, this.state.item_id, this.state.itemName, this.state.amount, history);
 
         }   
     }

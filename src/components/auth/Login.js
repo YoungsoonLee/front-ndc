@@ -19,13 +19,15 @@ export default class Login extends Component {
 		this.store.checkAuth();
 	}
 	
-	/*
+	
 	componentDidMount() {
 		console.log('login componentDidMount');
     }
-    */
+    
    
     componentDidUpdate(){
+		console.log('login componentDidUpdate');
+		
 		if (this.store.authenticated === true) {
 			const {history} = this.props;
 			this.store.setSuccessFlashMessage('You already logged in.');
