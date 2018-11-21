@@ -88,7 +88,7 @@ class TestBuyItem extends Component {
             <Container text style={{ marginTop: '5em' }}>
                 <div className="page posts">
                     <p className="subheader">
-                        Buy Game Item for Test
+                        Buy Game Item for Test ...
                     </p>
                     <hr />
                     <Form className='attached fluid segment' style={{ maxWidth: 600 }}>
