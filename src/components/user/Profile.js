@@ -14,6 +14,9 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.store = this.props.store.appState;
+        this.store.setClearMessage();
+        this.store.profileEmail = '';
+        this.store.profileDisplayname = '';
         this.store.setLoading('on');
     }
 

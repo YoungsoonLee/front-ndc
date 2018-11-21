@@ -4,6 +4,9 @@ import { Message } from 'semantic-ui-react'
 
 import Carousel from './ui/Carousel';
 
+//import ClearMsgWrapper from './wrapper/ClearMsgWrapper';
+//@ClearMsgWrapper
+
 @inject("store")
 @observer
 export default class Home extends Component {
@@ -12,12 +15,14 @@ export default class Home extends Component {
 		console.log("home constructor")
 		super(props);
 		this.store = this.props.store;
+
 		this.store.appState.setLoading('off');
-		this.store.appState.checkAuth();
+		//this.store.appState.checkAuth();
 	}
 
     componentDidMount() {
-        console.log('home componentDidMount');
+		console.log('home componentDidMount');
+		this.store.appState.checkAuth();
     }
      
     componentDidUpdate(){
