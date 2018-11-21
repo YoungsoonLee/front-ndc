@@ -20,6 +20,8 @@ class Payment extends Component {
         this.store = this.props.store;
         //this.store.appState.checkAuth();
         //console.log(this.store.appState.authenticated);
+        this.store.billingState.setSuccessFlashMessage('');
+        this.store.billingState.setErrorFlashMessage('');
     }
 
     /*
@@ -41,6 +43,7 @@ class Payment extends Component {
         const {history} = this.props;
         //uid, itemid, history
         var UID = this.store.appState.loggedInUserInfo.UID;
+        //console.log(UID);
         this.store.billingState.openPay(UID, value, history, this.store.appState)
     }
 

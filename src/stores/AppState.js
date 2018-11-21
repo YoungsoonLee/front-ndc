@@ -111,7 +111,7 @@ export default class AppState {
   }
 
   @action setAuthenticated(auth, UID, displayname, balance, gravater) {
-    // console.log("setAuth: ", uid, displayname);
+    //console.log("setAuth: ", UID, displayname);
     this.authenticated = auth;
     this.loggedInUserInfo.UID = UID;
     this.loggedInUserInfo.displayname = displayname;
@@ -226,6 +226,7 @@ export default class AppState {
         
         this.setInitUserInfo();
 
+        //console.log("login: ", respData.data.data);          
         storage.set('___GOM___', respData.data.data);
 
         //await this.checkAuth();
@@ -253,10 +254,14 @@ export default class AppState {
     let cookieInfo = null;
     cookieInfo = storage.get('___GOM___');
 
+    //console.log("cookie: ", cookieInfo);
+
     if ( cookieInfo ) {
       let auth = null;
       try{
         auth = await AuthAPI.checkLoginStatus(cookieInfo.token);
+        //console.log(auth);
+
       }catch(e){
         await this.setInitLoggedInUserInfo();
       }
@@ -265,7 +270,7 @@ export default class AppState {
         await this.setInitLoggedInUserInfo()
       }else{
         
-        console.log('check auth: ', auth.data.data);
+        //console.log('check auth: ', auth.data.data.uid);
 
         await this.setAuthenticated(
           true,
