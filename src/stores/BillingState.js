@@ -322,6 +322,7 @@ export default class BillingState {
         
         var iAmount = 0;
         iAmount = iAmount+parseInt(amount);
+        console.log(iAmount, parseInt(amount), amount)
 
         if ( cookieInfo ) {
             let data = null;
