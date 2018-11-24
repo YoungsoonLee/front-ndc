@@ -53,7 +53,7 @@ export default class BillingState {
             this.setErrorFlashMessage('Something wrong to get payment items. try agin.');
         }
     }
-
+ 
     async openPay(UID, itemid, history, appState) {
         //-------
         var complete = false;
@@ -319,20 +319,23 @@ export default class BillingState {
         cookieInfo = storage.get('___GOM___');
 
         console.log(external_id, item_id, item_name, amount, cookieInfo);
+        
+        let iAmount = 0
+        iAmount = iAmount+parseInt(amount);
 
         if ( cookieInfo ) {
             let data = null;
             try{
                 //data = await BillingAPI.getHash({token: cookieInfo.token, service_id: 'S1538718691252088000', external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount});
                 axios
-                .post('/v1/billing/getDeductHash', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, amount}, {headers: {Authorization: cookieInfo.token}})
+                .post('/v1/billing/getDeductHash', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, iAmount}, {headers: {Authorization: cookieInfo.token}})
                 .then(function (response) {
                     // handle success
                     //console.log("rr: ", response);
                     //hash = response.data.data
                     //data = BillingAPI.testBuyItem({token: cookieInfo.token, service_id: "S1538718691252088000", external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount, hash: response.data.data});
                     axios
-                    .post('/v1/billing/buyItem', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, amount, hash: response.data.data}, {headers: {Authorization: cookieInfo.token}})
+                    .post('/v1/billing/buyItem', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, iAmount, hash: response.data.data}, {headers: {Authorization: cookieInfo.token}})
                     .then(function (response) {
                         console.log("result: ", response, response.data.code);
                         appState.setLoading('off');
