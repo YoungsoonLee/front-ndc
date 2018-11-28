@@ -1,4 +1,7 @@
-import { observable, action } from "mobx";
+import {
+    observable,
+    action
+} from "mobx";
 import axios from "axios";
 
 import storage from '../lib/storage';
@@ -37,23 +40,23 @@ export default class BillingState {
 
     async fetchChagrgeItems() {
         let data = null;
-        try{
+        try {
             data = await BillingAPI.getChargeItems();
-        }catch(err){
+        } catch (err) {
             //this.errorFlash = err.response.data.message;
             this.setErrorFlashMessage(err.response.data.message);
         }
 
-        if(data) {
+        if (data) {
             //console.log(data.data.data);
             // itemId, itemName, itemPrice
             this.setChagrgeItems(data.data.data);
-        }else{
+        } else {
             //this.errorFlash = 'Something wrong to get payment items. try agin.';
             this.setErrorFlashMessage('Something wrong to get payment items. try agin.');
         }
     }
- 
+
     async openPay(UID, itemid, history, appState) {
         //-------
         var complete = false;
@@ -70,8 +73,8 @@ export default class BillingState {
 
         s.addEventListener(
             'load',
-            function(e) {
-                XPayStationWidget.on('close', function() {
+            function (e) {
+                XPayStationWidget.on('close', function () {
                     //complete
                     //if (complete) window.location.href = success_url //+'?trx_id='+transactionId;
                     if (complete) history.push('/payment/history'); //+'?trx_id='+transactionId;
@@ -80,9 +83,9 @@ export default class BillingState {
 
                 XPayStationWidget.on(
                     'status-invoice status-delivering status-troubled status-done',
-                    function(event, data) {
+                    function (event, data) {
                         console.log(arguments[0].type);
-                        
+
                         if (arguments[0].type == 'status-done') {
                             complete = true;
                             //transactionId = data.paymentInfo.invoice; //set invoce to transactionId
@@ -104,11 +107,11 @@ export default class BillingState {
         //console.log(user_id, item_id);
 
         //check inputs
-        if( (!UID) || (!itemid) ) {
+        if ((!UID) || (!itemid)) {
             //this.errorFlash = 'You should sign in first.'
             //go to login
             history.push('/login');
-        }else{
+        } else {
             var options = {
                 access_token: '',
                 lightbox: {
@@ -118,25 +121,28 @@ export default class BillingState {
                 },
                 sandbox: false
             };
-    
+
             let paymentToken = null;
-            try{
-                paymentToken = await BillingAPI.getPaymentToken({UID, itemid});
-            }catch(err) {
+            try {
+                paymentToken = await BillingAPI.getPaymentToken({
+                    UID,
+                    itemid
+                });
+            } catch (err) {
                 //this.errorFlash = err.response.data.message;
                 this.setErrorFlashMessage(err.response.data.message);
             }
 
             appState.setLoading('off');
-    
-            if(!paymentToken) {
+
+            if (!paymentToken) {
                 //this.errorFlash = 'something wrong. please try again.'
                 this.this.setErrorFlashMessage('something wrong. please try again.');
-            }else{
+            } else {
                 console.log(paymentToken.data.data);
 
                 options.access_token = paymentToken.data.data.token;
-    
+
                 if (paymentToken.data.data.mode === 'sandbox') {
                     options.sandbox = true;
                 }
@@ -144,7 +150,7 @@ export default class BillingState {
                 console.log("xsolla mode is sandbox? ", options.sandbox);
 
                 XPayStationWidget.init(options);
-    
+
                 document.getElementById('buyXsolla').click();
             }
         }
@@ -155,38 +161,62 @@ export default class BillingState {
         //console.log('billingState');
         await appState.checkAuth(); // TODO: ??
 
-        if(!appState.authenticated) {
+        if (!appState.authenticated) {
             this.setErrorFlashMessage('Need login first');
             //go to login
             history.push('/login');
 
-        }else{
+        } else {
             //console.log('fetchHistory');
 
-            if(this.historyMode === 'charge') {
+            if (this.historyMode === 'charge') {
                 var table = new Tabulator("#tabulator-1", {
-                    height:511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-                    layout:"fitColumns", //fit columns to width of table (optional)
-                    responsiveLayout:true,
-                    placeholder:"No Data Available", //display message to user on empty table
-                    columns:[ //Define Table Columns
-                        {title:"No", formatter:"rownum", align:"center", width:100},
-                        {title:"Date", field:"transaction_at", align:"left", formatter:function(cell, formatterParams){
+                    height: 511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                    layout: "fitColumns", //fit columns to width of table (optional)
+                    responsiveLayout: true,
+                    placeholder: "No Data Available", //display message to user on empty table
+                    columns: [ //Define Table Columns
+                        {
+                            title: "No",
+                            formatter: "rownum",
+                            align: "center",
+                            width: 100
+                        },
+                        {
+                            title: "Date",
+                            field: "transaction_at",
+                            align: "left",
+                            formatter: function (cell, formatterParams) {
                                 var value = cell.getValue();
                                 return moment(value).format('YYYY-MM-DD HH:mm:ss')
                             }
                         },
-                        {title:"Transaction Id", field:"pxid", align:"left"},
-                        {title:"Item Name", field:"item_name"},
-                        {title:"Price", field:"price",align:"left", formatter:function(cell, formatterParams){
+                        {
+                            title: "Transaction Id",
+                            field: "pxid",
+                            align: "left"
+                        },
+                        {
+                            title: "Item Name",
+                            field: "item_name"
+                        },
+                        {
+                            title: "Price",
+                            field: "price",
+                            align: "left",
+                            formatter: function (cell, formatterParams) {
                                 var value = cell.getValue();
                                 return numeral(value).format('$ 0,0.0');
                             }
                         },
-                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"amount",align:"left" , formatter:function(cell, formatterParams){
+                        {
+                            title: 'Amount of <i aria-hidden="true" class="diamond icon"></i>',
+                            field: "amount",
+                            align: "left",
+                            formatter: function (cell, formatterParams) {
                                 var value = cell.getValue();
                                 //return '<i class="fa fa-diamond" aria-hidden="true"></i> '+numeral(value).format('0,0');
-                                return '<i aria-hidden="true" class="diamond icon"></i> '+numeral(value).format('0,0');
+                                return '<i aria-hidden="true" class="diamond icon"></i> ' + numeral(value).format('0,0');
                             }
                         },
                     ],
@@ -198,8 +228,8 @@ export default class BillingState {
                 });
 
                 //table.setData('http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
-                table.setData('https://api-ndc.herokuapp.com/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
-                
+                table.setData('https://api-ndc.herokuapp.com/v1/billing/getChargeHistory/' + appState.loggedInUserInfo.UID, {}, "POST");
+
                 //$("#tabulator-1").tabulator("setData", 'http://localhost:8080/v1/billing/getChargeHistory/'+appState.loggedInUserInfo.UID,"POST");
 
                 /*
@@ -241,25 +271,45 @@ export default class BillingState {
                 $("#tabulator-1").tabulator("setData", 'http://localhost:4000/api/v1.0/billing/getChargeHistory/'+appState.loggedInUserInfo._id);
                 $("#tabulator-1").tabulator("redraw", true);
                 */
-            }else{
+            } else {
                 var table = new Tabulator("#tabulator-1", {
-                    height:511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-                    layout:"fitColumns", //fit columns to width of table (optional)
-                    responsiveLayout:true,
-                    placeholder:"No Data Available", //display message to user on empty table
-                    columns:[ //Define Table Columns
-                        {title:"No", formatter:"rownum", align:"center", width:150},
-                        {title:"Date", field:"used_at", align:"left", formatter:function(cell, formatterParams){
+                    height: 511, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                    layout: "fitColumns", //fit columns to width of table (optional)
+                    responsiveLayout: true,
+                    placeholder: "No Data Available", //display message to user on empty table
+                    columns: [ //Define Table Columns
+                        {
+                            title: "No",
+                            formatter: "rownum",
+                            align: "center",
+                            width: 150
+                        },
+                        {
+                            title: "Date",
+                            field: "used_at",
+                            align: "left",
+                            formatter: function (cell, formatterParams) {
                                 var value = cell.getValue();
                                 return moment(value).format('YYYY-MM-DD HH:mm:ss')
                             }
                         },
-                        {title:"Used Id", field:"id", align:"left"},
-                        {title:"Item Name", field:"external_itemname"},
-                        {title:'Amount of <i aria-hidden="true" class="diamond icon"></i>', field:"amount",align:"left" , formatter:function(cell, formatterParams){
+                        {
+                            title: "Used Id",
+                            field: "id",
+                            align: "left"
+                        },
+                        {
+                            title: "Item Name",
+                            field: "external_itemname"
+                        },
+                        {
+                            title: 'Amount of <i aria-hidden="true" class="diamond icon"></i>',
+                            field: "amount",
+                            align: "left",
+                            formatter: function (cell, formatterParams) {
                                 var value = cell.getValue();
                                 //return '<i class="fa fa-diamond" aria-hidden="true"></i> '+numeral(value).format('0,0');
-                                return '<i aria-hidden="true" class="diamond icon"></i> '+numeral(value).format('0,0');
+                                return '<i aria-hidden="true" class="diamond icon"></i> ' + numeral(value).format('0,0');
                             }
                         },
                     ],
@@ -271,7 +321,7 @@ export default class BillingState {
                 });
 
                 //table.setData('http://localhost:8080/v1/billing/getUsedHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
-                table.setData('https://api-ndc.herokuapp.com/v1/billing/getUsedHistory/'+appState.loggedInUserInfo.UID, {}, "POST");
+                table.setData('https://api-ndc.herokuapp.com/v1/billing/getUsedHistory/' + appState.loggedInUserInfo.UID, {}, "POST");
 
                 /*
                 $("#tabulator-1").tabulator({});
@@ -314,49 +364,70 @@ export default class BillingState {
 
     // test buy item
     async testBuyItem(appState, billingState, external_id, item_id, item_name, amount, history) {
-        
+
         let cookieInfo = null;
         cookieInfo = storage.get('___GOM___');
 
         console.log(external_id, item_id, item_name, amount, cookieInfo);
-        
-        var iAmount = 0;
-        iAmount = iAmount+parseInt(amount);
 
-        if ( cookieInfo ) {
+        var iAmount = 0;
+        iAmount = iAmount + parseInt(amount);
+
+        if (cookieInfo) {
             let data = null;
-            try{
+            try {
                 //data = await BillingAPI.getHash({token: cookieInfo.token, service_id: 'S1538718691252088000', external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount});
                 axios
-                .post('/v1/billing/getDeductHash', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, amount: parseInt(amount)}, {headers: {Authorization: cookieInfo.token}})
-                .then(function (response) {
-                    // handle success
-                    //console.log("rr: ", response);
-                    //hash = response.data.data
-                    //data = BillingAPI.testBuyItem({token: cookieInfo.token, service_id: "S1538718691252088000", external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount, hash: response.data.data});
-                    axios
-                    .post('/v1/billing/buyItem', { service_id: 'S1538718691252088000', external_txid: external_id, external_itemid: item_id, external_itemname: item_name, amount: parseInt(amount), hash: response.data.data}, {headers: {Authorization: cookieInfo.token}})
-                    .then(function (response) {
-                        console.log("result: ", response, response.data.code);
-                        appState.setLoading('off');
-                        if (response.data.code == "ok") {
-                            billingState.setHistoryMode('used');
-                            //this.historyMode = 'used';
-                            history.push('/payment/history');
-                        }else{
-                            // error
+                    .post('/v1/billing/getDeductHash', {
+                        service_id: 'S1538718691252088000',
+                        external_txid: external_id,
+                        external_itemid: item_id,
+                        external_itemname: item_name,
+                        amount: parseInt(amount)
+                    }, {
+                        headers: {
+                            Authorization: cookieInfo.token
                         }
-                    }).catch(function (error){
-                        appState.setLoading('off');
-                        console.log("buyitem error: ", error.response); //error.response.data.message
-                        billingState.setErrorFlashMessage(error.response.data.message);
-                    
+                    })
+                    .then(function (response) {
+                        // handle success
+                        //console.log("rr: ", response);
+                        //hash = response.data.data
+                        //data = BillingAPI.testBuyItem({token: cookieInfo.token, service_id: "S1538718691252088000", external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount, hash: response.data.data});
+                        axios
+                            .post('/v1/billing/buyItem', {
+                                service_id: 'S1538718691252088000',
+                                external_txid: external_id,
+                                external_itemid: item_id,
+                                external_itemname: item_name,
+                                amount: parseInt(amount),
+                                hash: response.data.data
+                            }, {
+                                headers: {
+                                    Authorization: cookieInfo.token
+                                }
+                            })
+                            .then(function (response) {
+                                console.log("result: ", response, response.data.code);
+                                appState.setLoading('off');
+                                if (response.data.code == "ok") {
+                                    billingState.setHistoryMode('used');
+                                    //this.historyMode = 'used';
+                                    history.push('/payment/history');
+                                } else {
+                                    // error
+                                }
+                            }).catch(function (error) {
+                                appState.setLoading('off');
+                                console.log("buyitem error: ", error.response); //error.response.data.message
+                                billingState.setErrorFlashMessage(error.response.data.message);
+
+                            });
+
+                    }).catch(function (error) {
+                        console.log("getDeductHash error: ", errror);
                     });
-                    
-                }).catch(function(error){
-                    console.log("getDeductHash error: ", errror);
-                });
-            }catch(e){
+            } catch (e) {
                 //await this.setInitLoggedInUserInfo();
                 console.log('error testBuyItem: ', e);
             }
@@ -372,12 +443,12 @@ export default class BillingState {
 
             console.log(data);
             */
-            
-        }else{
+
+        } else {
             // go to login
         }
 
-        
+
     }
 
     //test

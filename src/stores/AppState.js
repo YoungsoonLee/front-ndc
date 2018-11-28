@@ -1,4 +1,7 @@
-import { observable, action } from "mobx";
+import {
+  observable,
+  action
+} from "mobx";
 import axios from "axios";
 import validator from 'validator';
 
@@ -53,7 +56,7 @@ export default class AppState {
     this.successFlash = null;
 
     this.originProfileEmail = null;
-    this.originProfileDisplayname =null;
+    this.originProfileDisplayname = null;
     this.profileEmail = null;
     this.profileDisplayname = null;
     this.profileProvider = null;
@@ -74,17 +77,17 @@ export default class AppState {
     }
   }
 
-  @action setProfileEmail(value){
+  @action setProfileEmail(value) {
     this.originProfileEmail = value;
     this.profileEmail = value;
   }
 
-  @action setProfileDisplayname(value){
+  @action setProfileDisplayname(value) {
     this.originProfileDisplayname = value;
     this.profileDisplayname = value;
   }
 
-  @action setProfileProvider(value){
+  @action setProfileProvider(value) {
     this.profileProvider = value;
   }
 
@@ -93,11 +96,11 @@ export default class AppState {
   }
 
   @action setError(msg) {
-    
+
     if (msg != null) {
       this.error = msg;
       this.setLoading('off');
-    }else{
+    } else {
       this.error = msg;
     }
   }
@@ -119,7 +122,7 @@ export default class AppState {
     this.loggedInUserInfo.gravatar = gravater;
   }
 
-  @action  setInitLoggedInUserInfo() {
+  @action setInitLoggedInUserInfo() {
     storage.remove('___GOM___');
 
     this.authenticated = false;
@@ -150,27 +153,34 @@ export default class AppState {
 
   // Signup
   async Signup(history, lastLocation) {
-    
-    if ( 
-      !(validator.isLength(this.userInfo.displayname, {min:4, max: 16})) || 
-      (validator.contains(this.userInfo.displayname, ' ')) || 
+
+    if (
+      !(validator.isLength(this.userInfo.displayname, {
+        min: 4,
+        max: 16
+      })) ||
+      (validator.contains(this.userInfo.displayname, ' ')) ||
       !(validator.isAlphanumeric(this.userInfo.displayname))
-      ){
+    ) {
       this.setError('A displayname has 4~16 letters/numbers without space.');
-    }else if(!validator.isEmail(this.userInfo.email)) {
+    } else if (!validator.isEmail(this.userInfo.email)) {
       this.setError('Please input a valid email address.');
-    }else if ( !(validator.isLength(this.userInfo.password, {min:8, max: undefined})) || (validator.contains(this.userInfo.password, ' ')) ){
+    } else if (!(validator.isLength(this.userInfo.password, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(this.userInfo.password, ' '))) {
       this.setError('The password must be at least 8 characters long without space.');
-    }else{
+    } else {
       this.setError(null);
     }
 
-    if(!this.error) {
+    if (!this.error) {
       //let data = null;
       let respData = null;
-      try{
+      try {
         // call backend
-        respData = await AuthAPI.localRegister({...this.userInfo});
+        respData = await AuthAPI.localRegister({ ...this.userInfo
+        });
 
         // set init userinfo
         this.setInitUserInfo();
@@ -182,48 +192,57 @@ export default class AppState {
         //await this.checkAuth();
 
         // redirect to home
-        redirect.set(history,lastLocation);
+        redirect.set(history, lastLocation);
 
         // flash message
         this.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
 
-      }catch(err){
+      } catch (err) {
         if (err.response.data) {
           this.setError(err.response.data.message);
-        }else{
+        } else {
           this.setError(err);
         }
 
       }
     }
-    
+
   }
 
   // localLogin
   // async localLogin(history, lastLocation) {
-  async Login(history,lastLocation) {
+  async Login(history, lastLocation) {
     //console.log("call login");
-    
-    if ( 
-      !(validator.isLength(this.userInfo.displayname, {min:4, max: 16})) || 
-      (validator.contains(this.userInfo.displayname, ' ')) || 
+
+    if (
+      !(validator.isLength(this.userInfo.displayname, {
+        min: 4,
+        max: 16
+      })) ||
+      (validator.contains(this.userInfo.displayname, ' ')) ||
       !(validator.isAlphanumeric(this.userInfo.displayname))
-      ){
+    ) {
       this.setError('a displayname has 4~16 letters/numbers without space.');
-    }else if ( !(validator.isLength(this.userInfo.password, {min:8, max: undefined})) || (validator.contains(this.userInfo.password, ' ')) ){
+    } else if (!(validator.isLength(this.userInfo.password, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(this.userInfo.password, ' '))) {
       this.setError('The password must be at least 8 characters long without space.');
-    }else{
+    } else {
       this.setError(null);
     }
 
-    if(!this.error) {
-      
+    if (!this.error) {
+
       //let data = null;
       let respData = null;
-      try{
+      try {
 
-        respData = await AuthAPI.localLogin({displayname: this.userInfo.displayname, password: this.userInfo.password});
-        
+        respData = await AuthAPI.localLogin({
+          displayname: this.userInfo.displayname,
+          password: this.userInfo.password
+        });
+
         this.setInitUserInfo();
 
         //console.log("login: ", respData.data.data);          
@@ -231,21 +250,21 @@ export default class AppState {
 
         //await this.checkAuth();
 
-        redirect.set(history,lastLocation);
+        redirect.set(history, lastLocation);
 
         // flash message
         // this.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
 
-      }catch(err){
+      } catch (err) {
         //console.log(err);
         if (err.response.data) {
           this.setError(err.response.data.message);
-        }else{
+        } else {
           this.setError(err);
         }
       }
     }
-    
+
   }
 
   async checkAuth() {
@@ -256,31 +275,31 @@ export default class AppState {
 
     console.log("cookie: ", cookieInfo);
 
-    if ( cookieInfo ) {
+    if (cookieInfo) {
       let auth = null;
-      try{
+      try {
         auth = await AuthAPI.checkLoginStatus(cookieInfo.token);
         //console.log(auth);
 
-      }catch(e){
+      } catch (e) {
         await this.setInitLoggedInUserInfo();
       }
 
-      if(!auth) {
+      if (!auth) {
         await this.setInitLoggedInUserInfo()
-      }else{
-        
+      } else {
+
         //console.log('check auth: ', auth.data.data.uid);
 
         await this.setAuthenticated(
           true,
           auth.data.data.uid,
-          auth.data.data.displayname, 
-          auth.data.data.balance.toString(), 
+          auth.data.data.displayname,
+          auth.data.data.balance.toString(),
           auth.data.data.picture
         );
       }
-    }else{
+    } else {
       console.log('no gom');
       await this.setInitLoggedInUserInfo();
     }
@@ -290,64 +309,64 @@ export default class AppState {
   // socialAuth
   async socialAuth(provider, history, lastLocation) {
 
-    social[provider]().then((auth)=>{
+    social[provider]().then((auth) => {
       //console.log(auth)
 
-      hello(auth.network).api('/me').then(function(r) {   
+      hello(auth.network).api('/me').then(function (r) {
 
-        AuthAPI.socialAuth({ 
-          provider: provider, 
+        AuthAPI.socialAuth({
+          provider: provider,
           accessToken: auth.authResponse.access_token,
           email: r.email,
           providerId: r.id,
           picture: r.picture
-        }).then((response)=>{
+        }).then((response) => {
           //console.log(response.data.data);
 
           storage.set('___GOM___', response.data.data);
 
-          redirect.set(history,lastLocation);
+          redirect.set(history, lastLocation);
 
           // this.checkAuth();
 
           // flash message ... um error ... why ??
           // appState.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
           // this.setSuccessFlashMessage('Welcome ! ' + respData.data.data.displayname);
-  
-        }).catch((err)=>{
+
+        }).catch((err) => {
           console.log("err ", err);
 
           if (err.response.data) {
             this.setError(err.response.data.message);
-          }else{
+          } else {
             this.setError(err);
           }
         });
 
-      }, function(e) {
-        this.setError('somthing wrong with '+provider+'. try again after a few minutes. '+e.message);
+      }, function (e) {
+        this.setError('somthing wrong with ' + provider + '. try again after a few minutes. ' + e.message);
       });
 
-    }).catch((err)=>{
-        this.setError('somthing wrong with '+provider+'. try again after a few minutes.');
+    }).catch((err) => {
+      this.setError('somthing wrong with ' + provider + '. try again after a few minutes.');
     });
   }
 
 
   async confirmEmail(confirm_token, history) {
     let data = null;
-    try{ 
+    try {
       data = await UserAPI.confirmEmail(confirm_token);
-    }catch(err){
+    } catch (err) {
       this.errorFlash = err.response.data.message;
     }
 
     //console.log(data);
 
-    if(!data) {
+    if (!data) {
       this.setErrorFlashMessage('token is invalid or has expired. try resend again.');
       history.push('/invalidConfirmEmail');
-    }else{
+    } else {
       await this.setInitLoggedInUserInfo(); //first remove cookie
       await this.checkAuth();
       this.setSuccessFlashMessage('email confirm success. thank you. enjoy after login.');
@@ -357,25 +376,25 @@ export default class AppState {
 
   async resendConfirmEmail() {
 
-    if(!validator.isEmail(this.userInfo.email)) {
+    if (!validator.isEmail(this.userInfo.email)) {
       //this.setError('Please input a valid email address.');
       this.setErrorFlashMessage('Please input a valid email address.');
-    }else{
+    } else {
       this.setErrorFlashMessage(null);
     }
 
-    if(!this.errorFlash) {
+    if (!this.errorFlash) {
       let data = null;
-      try{ 
+      try {
         data = await UserAPI.resendConfirmEmail(this.userInfo.email);
         this.setInitUserInfo();
-      }catch(err){
+      } catch (err) {
         //console.log(err);
         //this.setError(err.response.data.message);
         this.setErrorFlashMessage(err.response.data.message);
       }
-      
-      if(data) {
+
+      if (data) {
         this.setSuccessFlashMessage('Resend succeed.');
       }
     }
@@ -396,31 +415,31 @@ export default class AppState {
 
     if (goto == "") {
       history.push('/');
-    }else{
+    } else {
       history.push(goto);
     }
-    
-    
+
+
   }
 
-  async forgotPassword(){
-    if(!validator.isEmail(this.userInfo.email)) {
+  async forgotPassword() {
+    if (!validator.isEmail(this.userInfo.email)) {
       this.setErrorFlashMessage('Please input a valid email address.');
-    }else{
+    } else {
       this.setErrorFlashMessage(null);
     }
 
-    if(!this.errorFlash) {
+    if (!this.errorFlash) {
       let data = null;
-      try{ 
+      try {
         data = await UserAPI.forgotPassword(this.userInfo.email);
         this.setInitUserInfo();
-      }catch(err){
+      } catch (err) {
         //console.log(err);
         this.setErrorFlashMessage(err.response.data.message);
       }
-      
-      if(data) {
+
+      if (data) {
         this.setSuccessFlashMessage('Send a password reset token to yor email. please check your email inbox or spam box.');
       }
     }
@@ -428,17 +447,17 @@ export default class AppState {
 
   async isValidResetPasswordToken(token, history) {
     let data = null;
-    try{ 
+    try {
       data = await UserAPI.isValidResetPasswordToken(token);
       //console.log(data);
-    }catch(err){
+    } catch (err) {
       //console.log(err);
       //this.errorFlash = err.response.data.message;
       this.setErrorFlashMessage(err.response.data.message);
       history.push('/forgotPassword');
     }
-    
-    if(data) {
+
+    if (data) {
       //this.successFlash = 'Reset Token is valid.'
       await this.setInitLoggedInUserInfo(); //first remove cookie
       await this.checkAuth();
@@ -448,28 +467,34 @@ export default class AppState {
 
 
   async resetPassword(resetToken, confirmPassword, history) {
-    if ( !(validator.isLength(this.userInfo.password, {min:8, max: undefined})) || (validator.contains(this.userInfo.password, ' ')) ){
+    if (!(validator.isLength(this.userInfo.password, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(this.userInfo.password, ' '))) {
       this.setError('The password must be at least 8 characters long without space.');
-    }else if ( !(validator.isLength(confirmPassword, {min:8, max: undefined})) || (validator.contains(confirmPassword, ' ')) ){
+    } else if (!(validator.isLength(confirmPassword, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(confirmPassword, ' '))) {
       this.setError('The confirm password must be at least 8 characters long without space.');
-    }else if(this.userInfo.password !== confirmPassword){
+    } else if (this.userInfo.password !== confirmPassword) {
       this.setError('Password does not match.');
-    }else{
+    } else {
       this.setError(null);
     }
 
-    if(!this.error) {
+    if (!this.error) {
       let data = null;
-      try{ 
+      try {
         data = await UserAPI.resetPassword(resetToken, this.userInfo.password);
         this.setInitUserInfo();
-      }catch(err){
+      } catch (err) {
         //console.log(err);
         //this.errorFlash = err.response.data.message;
         this.setErrorFlashMessage(err.response.data.message);
       }
-      
-      if(data) {
+
+      if (data) {
         //this.successFlash = 'Password is changed. please SIGN IN.'
         this.setSuccessFlashMessage('Password is changed. Please SIGN IN.');
         //console.log(history);
@@ -484,7 +509,7 @@ export default class AppState {
 
     await this.checkAuth();
 
-    if(!this.loggedInUserInfo.UID) {
+    if (!this.loggedInUserInfo.UID) {
       this.setErrorFlashMessage('Need login first');
 
       // clear storage
@@ -493,59 +518,62 @@ export default class AppState {
 
       //go to login
       history.push('/login');
-    }else{
+    } else {
 
       let profile = null;
-      try{
+      try {
         profile = await UserAPI.getProfile(this.loggedInUserInfo.UID);
-      }catch(err){
+      } catch (err) {
         this.setErrorFlashMessage(err.response.data.message);
       }
 
-      if(profile){
+      if (profile) {
         //console.log(profile.data.data)
         this.setProfileEmail(profile.data.data.email);
         this.setProfileDisplayname(profile.data.data.displayname);
         this.setProfileProvider(profile.data.data.provider);
         this.setLoading('off');
 
-      }else{
+      } else {
         this.setErrorFlashMessages('Something wrong to get profile.');
       }
     }
   }
 
-  
+
   async updateProfile(history) {
     // TODO: compare original value !!!
     if (this.originProfileDisplayname == this.profileDisplayname && this.originProfileEmail == this.profileEmail) {
       // do nothing
       this.setLoading('off');
-    }else{
+    } else {
       // using flash message
-      if ( 
-        !(validator.isLength(this.profileDisplayname, {min:4, max: 16})) || 
-        (validator.contains(this.profileDisplayname, ' ')) || 
+      if (
+        !(validator.isLength(this.profileDisplayname, {
+          min: 4,
+          max: 16
+        })) ||
+        (validator.contains(this.profileDisplayname, ' ')) ||
         !(validator.isAlphanumeric(this.profileDisplayname))
-        ){
+      ) {
         //this.setError('A displayname has 4~16 letters/numbers without space.');
         this.setErrorFlashMessage('A displayname has 4~16 letters/numbers without space.')
-      }else if(!validator.isEmail(this.profileEmail)) {
+      } else if (!validator.isEmail(this.profileEmail)) {
         //this.setError('Please input a valid email address.');
         this.setErrorFlashMessage('Please input a valid email address.')
-      }else{
+      } else {
         this.setErrorFlashMessage(null);
       }
 
-      if(!this.errorFlash) {
+      if (!this.errorFlash) {
         let data = null;
-        try{ 
+        try {
           data = await UserAPI.updateProfile(this.loggedInUserInfo.UID, this.profileDisplayname, this.profileEmail);
-        }catch(err){
+        } catch (err) {
           this.setErrorFlashMessage(err.response.data.message);
         }
-        
-        if(data) {
+
+        if (data) {
           await this.setInitLoggedInUserInfo(); //first remove cookie
           //await this.checkAuth();
           this.setSuccessFlashMessage('Profile is changed. please re-sign in.');
@@ -554,31 +582,37 @@ export default class AppState {
       }
     }
   }
-  
-  async updatePassword(newpassword,confirmPassword, history) {
+
+  async updatePassword(newpassword, confirmPassword, history) {
     this.setInitUserInfo();
 
     // using error message
 
-    if ( !(validator.isLength(newpassword, {min:8, max: undefined})) || (validator.contains(newpassword, ' ')) ){
+    if (!(validator.isLength(newpassword, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(newpassword, ' '))) {
       this.setError('The password must be at least 8 characters long without space.');
-    }else if ( !(validator.isLength(confirmPassword, {min:8, max: undefined})) || (validator.contains(confirmPassword, ' ')) ){
+    } else if (!(validator.isLength(confirmPassword, {
+        min: 8,
+        max: undefined
+      })) || (validator.contains(confirmPassword, ' '))) {
       this.setError('The confirm password must be at least 8 characters long without space.');
-    }else if(newpassword !== confirmPassword){
+    } else if (newpassword !== confirmPassword) {
       this.setError('New Password and Confirm Password does not match.');
-    }else{
+    } else {
       this.setError(null);
     }
 
-    if(!this.error) {
+    if (!this.error) {
       let data = null;
-      try{ 
+      try {
         data = await UserAPI.updatePassword(this.loggedInUserInfo.UID, newpassword);
-      }catch(err){
+      } catch (err) {
         this.setError(err.response.data.message);
       }
-      
-      if(data) {
+
+      if (data) {
         await this.setInitLoggedInUserInfo(); //first remove cookie
         //await this.checkAuth();
         this.setSuccessFlashMessage('Password is changed. please re-sign in.');
@@ -586,8 +620,8 @@ export default class AppState {
       }
     }
   }
-  
-  
+
+
   // ------------------------------------------------------------------------------------------------------------
   // not use below
   async fetchData(pathname, id) {
@@ -596,11 +630,13 @@ export default class AppState {
 
     if (id == null) {
       url = "https://jsonplaceholder.typicode.com/posts"
-    }else{
-      url ="https://jsonplaceholder.typicode.com/posts/"+id
+    } else {
+      url = "https://jsonplaceholder.typicode.com/posts/" + id
     }
 
-    let { data } = await axios.get(url);
+    let {
+      data
+    } = await axios.get(url);
     console.log(data);
     data.length > 0 ? this.setData(data) : this.setSingle(data);
   }
@@ -628,6 +664,6 @@ export default class AppState {
         resolve(this.authenticated);
       }, 0);
     });
-    */  
+    */
   }
 }
