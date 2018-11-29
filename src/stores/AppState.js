@@ -655,7 +655,7 @@ export default class AppState {
   }
 
   @action authenticate() {
-    /*
+    /*...
     return new Promise((resolve, reject) => {
       this.authenticating = true;
       setTimeout(() => {
