@@ -506,7 +506,7 @@ export default class AppState {
 
   async getProfile(history) {
     //this.setInitUserInfo();
-
+    /*
     await this.checkAuth();
 
     if (!this.loggedInUserInfo.UID) {
@@ -538,6 +538,38 @@ export default class AppState {
         this.setErrorFlashMessages('Something wrong to get profile.');
       }
     }
+    */
+
+    let cookieInfo = null;
+    cookieInfo = storage.get('___GOM___');
+
+    console.log("cookie: ", cookieInfo);
+
+    if (cookieInfo) {
+      let profile = null;
+      try {
+        profile = await UserAPI.getProfile(cookieInfo.token);
+      } catch (err) {
+        this.setErrorFlashMessage(err.response.data.message);
+      }
+
+      if (profile) {
+        console.log(profile.data.data)
+
+        this.setProfileEmail(profile.data.data.email);
+        this.setProfileDisplayname(profile.data.data.displayname);
+        this.setProfileProvider(profile.data.data.provider);
+        this.setLoading('off');
+
+      } else {
+        this.setErrorFlashMessages('Something wrong to get profile.');
+      }
+      
+    } else {
+      console.log('need login first.');
+      //history.push('/login');
+      await this.setInitLoggedInUserInfo();
+    }
   }
 
 
@@ -566,6 +598,35 @@ export default class AppState {
       }
 
       if (!this.errorFlash) {
+
+        // check cookie
+        let cookieInfo = null;
+        cookieInfo = storage.get('___GOM___');
+
+        console.log("cookie: ", cookieInfo);
+
+        if (cookieInfo) {
+          let data = null;
+          try {
+            data = await UserAPI.updateProfile(cookieInfo.token, this.profileDisplayname, this.profileEmail);
+          } catch (err) {
+            this.setErrorFlashMessage(err.response.data.message);
+          }
+
+          if (data) {
+            await this.setInitLoggedInUserInfo(); //first remove cookie
+            //await this.checkAuth();
+            this.setSuccessFlashMessage('Profile is changed. please re-sign in.');
+            history.push('/login');
+          }
+        }else{
+          console.log('need login first.');
+          await this.setInitLoggedInUserInfo();
+          this.setErrorFlashMessage('need login first.');
+          history.push('/login');
+        }
+
+        /*
         let data = null;
         try {
           data = await UserAPI.updateProfile(this.loggedInUserInfo.UID, this.profileDisplayname, this.profileEmail);
@@ -579,6 +640,8 @@ export default class AppState {
           this.setSuccessFlashMessage('Profile is changed. please re-sign in.');
           history.push('/login');
         }
+        */
+
       }
     }
   }
@@ -605,6 +668,34 @@ export default class AppState {
     }
 
     if (!this.error) {
+      // check cookie
+      let cookieInfo = null;
+      cookieInfo = storage.get('___GOM___');
+
+      console.log("cookie: ", cookieInfo);
+
+      if (cookieInfo) {
+        let data = null;
+        try {
+          data = await UserAPI.updatePassword(cookieInfo.token, newpassword);
+        } catch (err) {
+          this.setError(err.response.data.message);
+        }
+
+        if (data) {
+          await this.setInitLoggedInUserInfo(); //first remove cookie
+          //await this.checkAuth();
+          this.setSuccessFlashMessage('Password is changed. please re-sign in.');
+          history.push('/login');
+        }
+      }else{
+        console.log('need login first.');
+        await this.setInitLoggedInUserInfo();
+        this.setErrorFlashMessage('need login first.');
+        history.push('/login');
+      }
+
+      /*
       let data = null;
       try {
         data = await UserAPI.updatePassword(this.loggedInUserInfo.UID, newpassword);
@@ -618,6 +709,8 @@ export default class AppState {
         this.setSuccessFlashMessage('Password is changed. please re-sign in.');
         history.push('/login');
       }
+      */
+
     }
   }
 

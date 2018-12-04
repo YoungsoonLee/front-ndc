@@ -16,6 +16,10 @@ export const forgotPassword = (email) => axios.post('/v1/user/forgotPassword/'+e
 export const isValidResetPasswordToken = (reset_token) => axios.post('/v1/user/isValidResetPasswordToken/'+reset_token);
 export const resetPassword = (resetToken, password) => axios.post('/v1/user/resetPassword',{resetToken,password});
 
-export const getProfile = (UID) => axios.post('/v1/user/getProfile/'+UID);
-export const updateProfile = (UID, displayname, email) => axios.post('/v1/user/updateProfile',{UID,displayname, email});
-export const updatePassword = (UID, password) => axios.post('/v1/user/updatePassword',{UID, password});
+//export const getProfile = (UID) => axios.post('/v1/user/getProfile/'+UID);
+//export const updateProfile = (UID, displayname, email) => axios.post('/v1/user/updateProfile',{UID,displayname, email});
+//export const updatePassword = (UID, password) => axios.post('/v1/user/updatePassword',{UID, password});
+
+export const getProfile = (token) => axios.post('/v1/user/getProfile', null, {headers: {Authorization: token}});
+export const updateProfile = (token, displayname, email) => axios.post('/v1/user/updateProfile',{displayname, email}, {headers: {Authorization: token}});
+export const updatePassword = (token, password) => axios.post('/v1/user/updatePassword',{password}, {headers: {Authorization: token}});

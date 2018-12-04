@@ -122,6 +122,52 @@ export default class BillingState {
                 sandbox: false
             };
 
+            // check cookie
+            let cookieInfo = null;
+            cookieInfo = storage.get('___GOM___');
+
+            console.log("cookie: ", cookieInfo);
+
+            if (cookieInfo) {
+                let paymentToken = null;
+                try {
+                    paymentToken = await BillingAPI.getPaymentToken({
+                        token: cookieInfo.token,
+                        itemid
+                    });
+                } catch (err) {
+                    //this.errorFlash = err.response.data.message;
+                    this.setErrorFlashMessage(err.response.data.message);
+                }
+
+                appState.setLoading('off');
+
+                if (!paymentToken) {
+                    //this.errorFlash = 'something wrong. please try again.'
+                    this.this.setErrorFlashMessage('something wrong. please try again.');
+                } else {
+                    console.log(paymentToken.data.data);
+
+                    options.access_token = paymentToken.data.data.token;
+
+                    if (paymentToken.data.data.mode === 'sandbox') {
+                        options.sandbox = true;
+                    }
+
+                    console.log("xsolla mode is sandbox? ", options.sandbox);
+
+                    XPayStationWidget.init(options);
+
+                    document.getElementById('buyXsolla').click();
+                }
+            }else{
+                console.log('need login first.');
+                await appState.setInitLoggedInUserInfo();
+                this.setErrorFlashMessage('need login first.');
+                history.push('/login');
+            }
+
+            /*
             let paymentToken = null;
             try {
                 paymentToken = await BillingAPI.getPaymentToken({
@@ -153,6 +199,7 @@ export default class BillingState {
 
                 document.getElementById('buyXsolla').click();
             }
+            */
         }
     }
 
