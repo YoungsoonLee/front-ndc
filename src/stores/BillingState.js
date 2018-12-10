@@ -433,7 +433,7 @@ export default class BillingState {
                         amount: parseInt(amount)
                     }, {
                         headers: {
-                            Authorization: cookieInfo.token
+                            Authorization: "Bearer " + cookieInfo.token
                         }
                     })
                     .then(function (response) {
@@ -451,7 +451,7 @@ export default class BillingState {
                                 hash: response.data.data
                             }, {
                                 headers: {
-                                    Authorization: cookieInfo.token
+                                    Authorization: "Bearer " + cookieInfo.token
                                 }
                             })
                             .then(function (response) {

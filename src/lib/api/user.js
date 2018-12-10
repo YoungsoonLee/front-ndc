@@ -21,5 +21,7 @@ export const resetPassword = (resetToken, password) => axios.post('/v1/user/rese
 //export const updatePassword = (UID, password) => axios.post('/v1/user/updatePassword',{UID, password});
 
 export const getProfile = (token) => axios.post('/v1/user/getProfile', null, {headers: {Authorization: "Bearer "+token}});
+
 export const updateProfile = (token, displayname, email) => axios.post('/v1/user/updateProfile',{displayname, email}, {headers: {Authorization: "Bearer "+token}});
+
 export const updatePassword = (token, password) => axios.post('/v1/user/updatePassword',{password}, {headers: {Authorization: "Bearer "+token}});
