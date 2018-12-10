@@ -421,6 +421,7 @@ export default class BillingState {
         iAmount = iAmount + parseInt(amount);
 
         if (cookieInfo) {
+            let head = "Bearer " + cookieInfo.token;
             let data = null;
             try {
                 //data = await BillingAPI.getHash({token: cookieInfo.token, service_id: 'S1538718691252088000', external_id: external_id, item_id: item_id, item_name: item_name, item_amount: amount});
@@ -433,7 +434,7 @@ export default class BillingState {
                         amount: parseInt(amount)
                     }, {
                         headers: {
-                            Authorization: "Bearer " + cookieInfo.token
+                            Authorization: head
                         }
                     })
                     .then(function (response) {
@@ -451,7 +452,7 @@ export default class BillingState {
                                 hash: response.data.data
                             }, {
                                 headers: {
-                                    Authorization: "Bearer " + cookieInfo.token
+                                    Authorization: head
                                 }
                             })
                             .then(function (response) {
