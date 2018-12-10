@@ -84,7 +84,7 @@ export default class BillingState {
                 XPayStationWidget.on(
                     'status-invoice status-delivering status-troubled status-done',
                     function (event, data) {
-                        console.log(arguments[0].type);
+                        //console.log(arguments[0].type);
 
                         if (arguments[0].type == 'status-done') {
                             complete = true;
@@ -146,7 +146,7 @@ export default class BillingState {
                     //this.errorFlash = 'something wrong. please try again.'
                     this.this.setErrorFlashMessage('something wrong. please try again.');
                 } else {
-                    console.log(paymentToken.data.data);
+                    //console.log(paymentToken.data.data);
 
                     options.access_token = paymentToken.data.data.token;
 
@@ -455,7 +455,7 @@ export default class BillingState {
                                 }
                             })
                             .then(function (response) {
-                                console.log("result: ", response, response.data.code);
+                                //console.log("result: ", response, response.data.code);
                                 appState.setLoading('off');
                                 if (response.data.code == "ok") {
                                     billingState.setHistoryMode('used');
